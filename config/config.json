@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "bcit-directory-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/bcitDirectory/BcitDirectoryWebPart.js",
+          "manifest": "./src/webparts/bcitDirectory/BcitDirectoryWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "BcitDirectoryWebPartStrings": "lib/webparts/bcitDirectory/loc/{locale}.js"
+  }
+}
