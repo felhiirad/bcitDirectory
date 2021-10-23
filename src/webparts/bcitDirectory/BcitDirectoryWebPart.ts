@@ -5,23 +5,43 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'BcitDirectoryWebPartStrings';
 import BcitDirectory from './components/BcitDirectory';
 import { IBcitDirectoryProps } from './components/IBcitDirectoryProps';
+import { sp } from "@pnp/sp/presets/all";
+
+
+
+
 
 export interface IBcitDirectoryWebPartProps {
   description: string;
+  siteUrl:string;
+  context:WebPartContext;
 }
 
 export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDirectoryWebPartProps> {
+
+
+  protected onInit(): Promise<void> {
+
+    return super.onInit().then(_ => {
+      sp.setup({
+        spfxContext: this.context
+      });
+    });
+  }
+
 
   public render(): void {
     const element: React.ReactElement<IBcitDirectoryProps> = React.createElement(
       BcitDirectory,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context,
+        siteUrl: this.properties.siteUrl ? this.properties.siteUrl : this.context.pageContext.web.absoluteUrl
       }
     );
 
@@ -49,6 +69,9 @@ export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDir
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('siteUrl', {
+                  label: strings.SiteUrlFieldLabel
                 })
               ]
             }
