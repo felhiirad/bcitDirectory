@@ -10,6 +10,9 @@ import { Label } from 'office-ui-fabric-react/lib/Label';
 import { DatePicker,  mergeStyleSets, PrimaryButton, IIconProps } from 'office-ui-fabric-react';
 import { sp } from '@pnp/sp/presets/all';
 import { Dialog } from '@microsoft/sp-dialog';
+import {MyFormValues} from '../../shared/service/MyFormValues' ;
+import { ListCol } from '../../shared/service/ListCol';
+
 
 
 const controlClass = mergeStyleSets({
@@ -18,14 +21,7 @@ const controlClass = mergeStyleSets({
     maxWidth: '300px',
   },
 });
-interface MyFormValues {
-  createdBy: string,
-  updatedBy: string,
-  errorMsg: string,
-  picked: string,
-  startDate: any,
-  endDate: any
-   }
+
 export default class BcitDirectory extends React.Component<IBcitDirectoryProps, IBcitDirectoryState, {}> {
   private cancelIcon: IIconProps = { iconName: 'Cancel' };
   private saveIcon: IIconProps = { iconName: 'Save' };
@@ -40,6 +36,8 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
       spfxContext: this.props.context
     });
     this._services = new SPService(this.props.siteUrl);
+    this.createRecord = this.createRecord.bind(this);
+
   }
   /** set field value and error message for all the fields */
   private getFieldProps = (formik: FormikProps<any>, field: string) => {
@@ -48,57 +46,68 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
   /** create record in sharepoint list */
 
   public async createRecord(record: any) {
-      await this._services.createTask("Tasks", {
-          CREATED_BY: record.createdBy,
-          UPDATED_BY: record.updatedBy,
-          SUCCESS:record.picked,
-          CREATION_DATE: record.startDate,
-          UPDATE_DATE: new Date(record.endDate),
-          ERROR_MSG: record.errorMsg,
-    }).then((data) => {
-      Dialog.alert("Added to the list Sharepoint 'UsersLog' successfully !!!");
-      return data;
-
-    }).catch((err) => {
-      console.error(err);
-      throw err;
-    });
-  }
+    const item :ListCol={
+      CREATED_BY: record.createdBy,
+      UPDATED_BY: record.updatedBy,
+      SUCCESS:record.picked,
+      CREATION_DATE: record.startDate,
+      UPDATE_DATE: new Date(record.endDate),
+      ERROR_MSG: record.errorMsg,
+    }
+    
+     await this._services.createTask("Tasks", item)
+     .then((data) => {
+          Dialog.alert("data added in list sharepoint >>>>>>>>>successfully  check your list !!!  :)");
+          return data;
+        }).catch((err) => {
+          console.error(err);
+          throw err;
+        });
+      }
   public render(): React.ReactElement<IBcitDirectoryProps> {
-    const initialValues :MyFormValues={
-          createdBy: '',
-          updatedBy: '',
-          errorMsg: '',
-          picked: '',
-          startDate: null,
-          endDate: null
+     const initialValues :MyFormValues={
+           createdBy: '',
+           updatedBy: '',
+           errorMsg: '',
+           picked: '',
+           startDate: null,
+           endDate: null
     }
     return (
-      < div className="resetForm">
-        <Formik initialValues={initialValues}
+      
+      <Formik initialValues={initialValues}
           //validationSchema={validate}
-          onSubmit={this.createRecord}>
+          //onSubmit={this.createRecord}
+          onSubmit={(values, helpers) => {
+            console.log('SUCCESS!! :-)\n\n' + JSON.stringify(values, null, 4));
+            this.createRecord(values).then(response => {
+              helpers.resetForm()
+            });
+          }}>
+          
           {formik => (
             <div className={styles.reactFormik}>
               <Stack>
                 <Label className={styles.lblForm}>Best Consulting IT Directory</Label>
               
                 <Label className={styles.lblForm}>Created By</Label>
-              <TextField name = "createdBy" placeholder="Created BY"
+              <TextField name = "createdBy" 
+                    {...this.getFieldProps(formik, 'createdBy')}
                  />
-               
+              
                 <Label className={styles.lblForm}>Created Date</Label>
               <DatePicker
                 className={controlClass.control}
                 id="startDate"
                 value={formik.values.startDate}
+                textField={{ ...this.getFieldProps(formik, 'startDate') }}
                 onSelectDate={(date) => formik.setFieldValue('startDate', date)}
               />
                 
                 <Label className={styles.lblForm}>Updated By</Label>
               <TextField
                  name="updatedBy"
-                 placeholder="Updated By" 
+                 {...this.getFieldProps(formik, 'updatedBy')}
                 />
                 
               <Label className={styles.lblForm}>Updated Date</Label>
@@ -106,6 +115,7 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
                 className={controlClass.control}
                 id="endDate"
                 value={formik.values.startDate}
+                textField={{ ...this.getFieldProps(formik, 'endDate') }}
                 onSelectDate={(date) => formik.setFieldValue('endDate', date)}
               />
                 
@@ -129,6 +139,8 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
                 multiline
                 rows={6}
                 name="errorMsg"
+                {...this.getFieldProps(formik, 'errorMsg')}
+
                 />
               </Stack>
               <PrimaryButton
@@ -136,6 +148,7 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
                  text="Save"
                  iconProps={this.saveIcon}
                  className={styles.btnsForm}
+                 onClick={formik.handleSubmit as any}
               />
               <PrimaryButton
                  text="Cancel"
@@ -147,7 +160,7 @@ export default class BcitDirectory extends React.Component<IBcitDirectoryProps, 
           )
           }
         </Formik >
-      </div >
+      
     );
   }
 }
