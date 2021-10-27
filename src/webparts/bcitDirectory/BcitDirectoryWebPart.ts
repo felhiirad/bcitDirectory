@@ -11,15 +11,14 @@ import * as strings from 'BcitDirectoryWebPartStrings';
 import BcitDirectory from './components/BcitDirectory';
 import { IBcitDirectoryProps } from './components/IBcitDirectoryProps';
 import { sp } from "@pnp/sp/presets/all";
-
-
+import {ListItemsWebPartContext}from './components/BcitDirectory'
 
 
 
 export interface IBcitDirectoryWebPartProps {
-  description: string;
-  siteUrl:string;
-  context:WebPartContext;
+  description?: string;
+  siteUrl?:string;
+  context?:WebPartContext;
 }
 
 export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDirectoryWebPartProps> {
@@ -55,6 +54,7 @@ export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDir
   protected get dataVersion(): Version {
     return Version.parse('1.0');
   }
+  
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
