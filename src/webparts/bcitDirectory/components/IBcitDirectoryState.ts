@@ -1,4 +1,4 @@
-import { date } from "yup"
+
 
 export interface IBcitDirectoryState {
     startDate?: any;
@@ -11,6 +11,7 @@ export interface IBcitDirectoryState {
     companyName:string;
    
   }
+  
   export interface IUserData {
     CREATED_BY:string ;
     UPDATED_BY:string ;

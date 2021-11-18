@@ -8,6 +8,8 @@ import {IUserItem,IUserData} from "./IBcitDirectoryState"
 import { useEffect,useState } from "react";
 import { render } from 'react-dom';
 
+
+
 export interface IList{
     createdBy: string,
     updatedBy: string,

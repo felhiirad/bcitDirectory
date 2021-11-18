@@ -1,18 +1,14 @@
 import * as React from "react";
-import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { IBcitDirectoryProps } from "./IBcitDirectoryProps";
 import BcitDirectoryForm from "./BcitDirectoryForm";
 import { MSGraphClient } from "@microsoft/sp-http";
 import { useEffect, useState } from "react";
 import { IUserItem, IUserData } from "./IBcitDirectoryState";
-import ListData from "./ListData";
 import { PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { Dialog } from "@microsoft/sp-dialog";
-
-
-
-
-
+import BcitDirectoryFormS from "./BcitDirectoryFormS";
+import { Dropdown, Icon, Label, Stack } from "office-ui-fabric-react";
+import styles from "./BcitDirectory.module.scss";
 
 // const controlClass = mergeStyleSets({
 //   control: {
@@ -20,23 +16,16 @@ import { Dialog } from "@microsoft/sp-dialog";
 //     maxWidth: "300px",
 //   },
 // });
-const ListItemsWebPartContext = React.createContext<WebPartContext>(null);
+//const ListItemsWebPartContext = React.createContext<WebPartContext>(null);
 
 const BcitDirectory: React.FC<IBcitDirectoryProps> = (props) => {
   const [user, setUser] = useState<IUserItem>();
   const [data, setData] = useState<IUserData>();
+  const [optionValue, setOptionValue] = useState("");
+  const Info = () => <Icon iconName="Info" />;
 
-  const users = {
-    accountEnabled: true,
-    displayName: "test",
-    mailNickname: "amine",
-    userPrincipalName: "test.amine@bestconsultingit.onmicrosoft.com",
-    passwordProfile: {
-      forceChangePasswordNextSignIn: true,
-      password: "Iradfelhi485",
-    },
-  };
-// function 
+  
+  // function
   useEffect(() => {
     props.context.msGraphClientFactory
       .getClient()
@@ -61,39 +50,44 @@ const BcitDirectory: React.FC<IBcitDirectoryProps> = (props) => {
       });
   }, []);
 
-//function to add user
-   const addUsers = () => {
-    props.context.msGraphClientFactory
-      .getClient()
-      .then((client: MSGraphClient) => {
-        client
-          .api("/users")
-          .version("v1.0")
-          .post(users);
-      });
-      Dialog.alert(
-        " you add new user check your list of active user :)"
-      );
-  };
+ 
+ 
+  console.log(optionValue, "Account typeeeeeeeeeeeee");
 
   return (
     <>
-      <BcitDirectoryForm
-        context={props.context}
-        description={props.description}
-        siteUrl={props.siteUrl}
-      />
-      <div> submited by {user && user.displayName}</div>
-      <div> mail :{user && user.mail}</div>
+      <Label className={styles.lblForm}>
+        Best Consulting IT Directory <Info />
+      </Label>
+      <Stack horizontal horizontalAlign="space-evenly">
+        <Dropdown
+          id="addType"
+          label="Account type :"
+          onChange={(e, selectedOption) => {
+            setOptionValue(selectedOption.text)
+          }}
+          options={[
+            { key: "guest", text: "Guest", isSelected: true },
+            { key: "microsoft365", text: "Microsoft 365" },
+          ]}
+        />
+      </Stack>
 
-      <ListData
-        context={props.context}
-        description={props.description}
-        siteUrl={props.siteUrl}
-      />
-      <PrimaryButton text="Add user" onClick={() =>addUsers() }></PrimaryButton>
+      {optionValue == "Microsoft 365" ? (
+        <BcitDirectoryFormS
+          context={props.context}
+          description={props.description}
+          siteUrl={props.siteUrl}
+        />
+      ) : (
+        <BcitDirectoryForm
+          context={props.context}
+          description={props.description}
+          siteUrl={props.siteUrl}
+        />
+      )}
+      <br></br>
     </>
   );
 };
-
 export default BcitDirectory;

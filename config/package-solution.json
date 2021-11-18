@@ -21,6 +21,7 @@
         "scope":"DeviceManagementApps.ReadWrite.All"
         
       },
+      
       {
         "resource":"Microsoft Graph",
         "scope":"DeviceManagementConfiguration"

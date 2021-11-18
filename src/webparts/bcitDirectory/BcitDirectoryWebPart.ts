@@ -6,12 +6,11 @@ import {
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart, WebPartContext } from '@microsoft/sp-webpart-base';
-
 import * as strings from 'BcitDirectoryWebPartStrings';
 import BcitDirectory from './components/BcitDirectory';
 import { IBcitDirectoryProps } from './components/IBcitDirectoryProps';
 import { sp } from "@pnp/sp/presets/all";
-//import {ListItemsWebPartContext}from './components/BcitDirectory'
+
 
 
 
