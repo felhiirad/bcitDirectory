@@ -11,7 +11,7 @@ import * as strings from 'BcitDirectoryWebPartStrings';
 import BcitDirectory from './components/BcitDirectory';
 import { IBcitDirectoryProps } from './components/IBcitDirectoryProps';
 import { sp } from "@pnp/sp/presets/all";
-import {ListItemsWebPartContext}from './components/BcitDirectory'
+//import {ListItemsWebPartContext}from './components/BcitDirectory'
 
 
 
@@ -19,6 +19,7 @@ export interface IBcitDirectoryWebPartProps {
   description?: string;
   siteUrl?:string;
   context?:WebPartContext;
+  
 }
 
 export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDirectoryWebPartProps> {
@@ -35,14 +36,15 @@ export default class BcitDirectoryWebPart extends BaseClientSideWebPart<IBcitDir
 
 
   public render(): void {
-    const element: React.ReactElement<IBcitDirectoryProps> = React.createElement(
-      BcitDirectory,
-      {
+    const element: React.ReactElement<IBcitDirectoryProps> =
+      React.createElement(BcitDirectory, {
+         
         description: this.properties.description,
         context: this.context,
-        siteUrl: this.properties.siteUrl ? this.properties.siteUrl : this.context.pageContext.web.absoluteUrl
-      }
-    );
+        siteUrl: this.properties.siteUrl
+          ? this.properties.siteUrl
+          : this.context.pageContext.web.absoluteUrl,
+      });
 
     ReactDom.render(element, this.domElement);
   }

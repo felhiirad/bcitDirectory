@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDom from 'react-dom';
 import { useState, FC } from "react";
 import styles from "./BcitDirectory.module.scss";
 import { IBcitDirectoryProps } from "./IBcitDirectoryProps";
@@ -18,7 +19,10 @@ import { Dialog } from "@microsoft/sp-dialog";
 import { MyFormValues } from "../../shared/service/MyFormValues";
 import { ListCol } from "../../shared/service/ListCol";
 import * as yup from "yup";
-import {WebPartContext} from '@microsoft/sp-webpart-base'
+import {WebPartContext} from '@microsoft/sp-webpart-base';
+import Recaptcha from "react-recaptcha";
+
+
 
 
 
@@ -29,6 +33,7 @@ const controlClass = mergeStyleSets({
       maxWidth: "300px",
     },
   });
+  
   export const  ListItemsWebPartContext=React.createContext<WebPartContext>(null);
   
   const BcitDirectoryForm: React.FC<IBcitDirectoryProps> = (props) => {
@@ -96,6 +101,8 @@ const controlClass = mergeStyleSets({
         .required("Please select the date of updating")
         .nullable(),
       picked: yup.string().required("please success field is required "),
+      recaptcha: yup.string().required("reCAPTCHA is required "),
+
     });
     const initialValues: MyFormValues = {
       createdBy: "",
@@ -104,7 +111,15 @@ const controlClass = mergeStyleSets({
       picked: "",
       startDate: null,
       endDate: null,
+      recaptcha:""
     };
+    React.useEffect(()=>{
+      const script=document.createElement("script")
+      script.src="https://www.google.com/recaptcha/api.js"
+      script.async = true;
+      script.defer = true;
+    document.body.appendChild(script);
+    })
     return (
      
       <Formik
@@ -121,15 +136,18 @@ const controlClass = mergeStyleSets({
         {(formik) => (
           <div className={styles.reactFormik}>
             <Stack>
+
               <Label className={styles.lblForm}>
                 Best Consulting IT Directory
               </Label>
+              
   
               <Label className={styles.lblForm}>Created By</Label>
               <TextField
                 name="createdBy"
                 {...getFieldProps(formik, "createdBy")}
               />
+              
   
               <Label className={styles.lblForm}>Created Date</Label>
               <DatePicker
@@ -139,6 +157,7 @@ const controlClass = mergeStyleSets({
                 textField={{ ...getFieldProps(formik, "startDate") }}
                 onSelectDate={(date) => formik.setFieldValue("startDate", date)}
               />
+          
   
               <Label className={styles.lblForm}>Updated By</Label>
               <TextField
@@ -173,7 +192,16 @@ const controlClass = mergeStyleSets({
                 name="errorMsg"
                 {...getFieldProps(formik, "errorMsg")}
               />
+               <Recaptcha
+                  sitekey="6Lfe3fscAAAAAEgIAzMIUm7K0a0s7WxDVDCIAsT_"
+                  render="explicit"
+                  theme="dark"
+                  verifyCallback={(response) => { formik.setFieldValue("recaptcha", response); }}
+                  onloadCallback={() => { console.log("done loading!"); }}
+                />
             </Stack>
+           
+                 
             <PrimaryButton
               type="submit"
               text="Save"
@@ -189,10 +217,10 @@ const controlClass = mergeStyleSets({
             />
           </div>
         )}
-      </Formik>
-          
-  
+      </Formik>   
+
+
     );
   };
-  
+
   export default BcitDirectoryForm;

@@ -7,6 +7,46 @@
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": true,
+    "webApiPermissionRequests": [
+      {
+        "resource":"Microsoft Graph",
+        "scope":"sites.Read.All" 
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"User.ReadBasic.All"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"DeviceManagementApps.ReadWrite.All"
+        
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"DeviceManagementConfiguration"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"DeviceManagementManagedDevices.ReadWrite.All"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"DeviceManagementServiceConfig.ReadWrite.All"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"Directory.AccessAsUser.All"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"Directory.ReadWrite.All"
+      },
+      {
+        "resource":"Microsoft Graph",
+        "scope":"User.ReadWrite.All"
+      }
+
+    ],
     "developer": {
       "name": "",
       "websiteUrl": "",
@@ -19,3 +59,5 @@
     "zippedPackage": "solution/bcit-directory.sppkg"
   }
 }
+
+ 

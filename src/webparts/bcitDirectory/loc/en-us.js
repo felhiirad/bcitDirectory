@@ -5,3 +5,4 @@ define([], function() {
     "DescriptionFieldLabel": "Description Field"
   }
 });
+

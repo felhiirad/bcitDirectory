@@ -4,5 +4,6 @@ export interface MyFormValues{
    errorMsg: string,
    picked: string,
    startDate: any,
-   endDate: any
+   endDate: any,
+   recaptcha:string,
 }
